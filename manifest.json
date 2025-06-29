@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "ResuMakerExtension",
+  "version": "1.0.0",
+  "description": "A browser extension with a React popup login form and a context menu item.",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "resuMaker.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["injectGenerationContainer.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "contextMenus",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "resuMaker.png",
+    "48": "resuMaker.png",
+    "128": "resuMaker.png"
+  }
+}
