@@ -30,7 +30,7 @@ const GenerationContainer: React.FC = () => {
     window.addEventListener("show-generation-container", (event: any) => {
       setVisible(true);
       setLoginRequired(false);
-      setJobPosting(event.detail.jobPosting);
+      // setJobPosting(event.detail.jobPosting);
       setDocumentType(event.detail.documentType);
       getDocument(event.detail.jobPosting, event.detail.documentType);
     });
@@ -39,6 +39,13 @@ const GenerationContainer: React.FC = () => {
       setLoginRequired(true);
       setVisible(true);
     })
+
+    window.addEventListener("auth-updated", (event: any) => {
+      if (event.detail.authenticated) {
+        setLoginRequired(false);
+        setVisible(true);
+      }
+    });
 
     return () => {
       window.removeEventListener("show-generation-container", () => {
@@ -54,7 +61,12 @@ const GenerationContainer: React.FC = () => {
   }, []);
 
   const getDocument = async (jobPosting: string, documentType: string) => {
+    setGeneratedDocument("");
     setIsDocumentLoading(true);
+
+    if (!jobPosting) {
+      setJobPosting(window.getSelection()?.toString() || "");
+    }
 
     try {
       // @ts-ignore
@@ -124,6 +136,39 @@ const GenerationContainer: React.FC = () => {
     }
   };
 
+  const textAreaStyles = {
+    width: "100%",
+    height: INNER_HEIGHT,
+    '& .MuiInputBase-root': {
+      height: '100%',
+      alignItems: 'flex-start',
+      padding: '20px',
+      borderRadius: '8px',
+      fontSize: '1rem',
+      lineHeight: '1.5',
+      fontFamily: 'inherit',
+    },
+    '& .MuiInputBase-input': {
+      height: '100% !important',
+      overflow: 'auto !important',
+      whiteSpace: 'pre-line',
+    },
+  }
+
+  const buttonStyles = {
+    position: 'absolute',
+    top: 16,
+    zIndex: 10000,
+    background: '#d3d3d3',
+    border: '1px solid #ccc',
+    borderRadius: 2,
+    width: 40,
+    height: 40,
+    '&:hover': {
+      background: '#f5f5f5',
+    },
+  }
+
   return (
     visible && (
       <Paper
@@ -136,7 +181,7 @@ const GenerationContainer: React.FC = () => {
           height: "100%",
           maxWidth: loginRequired ? LOGIN_REQUIRED_WIDTH : GENERATION_WIDTH,
           maxHeight: loginRequired ? LOGIN_REQUIRED_HEIGHT : GENERATION_HEIGHT,
-          background: '#1c1c1a',
+          background: '#363636',
           boxShadow: '0 0 16px rgba(0,0,0,0.1)',
           display: 'flex',
           alignItems: 'center',
@@ -148,20 +193,7 @@ const GenerationContainer: React.FC = () => {
       >
         <IconButton
           onClick={handleRemoveSquares}
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            zIndex: 10000,
-            background: '#fff',
-            border: '1px solid #ccc',
-            borderRadius: 2,
-            width: 40,
-            height: 40,
-            '&:hover': {
-              background: '#f5f5f5',
-            },
-          }}
+          sx={{ ...buttonStyles, right: 16, }}
         >
           <Close />
         </IconButton>
@@ -176,20 +208,7 @@ const GenerationContainer: React.FC = () => {
             <IconButton
               onClick={handleRefresh}
               disabled={!jobPosting || !documentType || isDocumentLoading}
-              sx={{
-                position: 'absolute',
-                top: 16,
-                right: 184, // Position to the left of the PDF export button
-                zIndex: 10000,
-                background: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: 2,
-                width: 40,
-                height: 40,
-                '&:hover': {
-                  background: '#f5f5f5',
-                },
-              }}
+              sx={{ ...buttonStyles, right: 184 }}
             >
               <Refresh 
                 sx={{
@@ -208,20 +227,7 @@ const GenerationContainer: React.FC = () => {
             <IconButton
               onClick={handleCopyToClipboard}
               disabled={!generatedDocument || isDocumentLoading}
-              sx={{
-                position: 'absolute',
-                top: 16,
-                right: 72, // Position to the left of the close button
-                zIndex: 10000,
-                background: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: 2,
-                width: 40,
-                height: 40,
-                '&:hover': {
-                  background: '#f5f5f5',
-                },
-              }}
+              sx={{ ...buttonStyles, right: 72 }}
             >
               {copied ? <Check /> : <ContentCopy />}
             </IconButton>
@@ -230,45 +236,47 @@ const GenerationContainer: React.FC = () => {
               jobPosting={jobPosting}
               content={generatedDocument}
               disabled={!generatedDocument || isDocumentLoading}
-              sx={{
-                position: 'absolute',
-                top: 16,
-                right: 128,
-                zIndex: 10000,
-                background: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: 2,
-                width: 40,
-                height: 40,
-                '&:hover': {
-                  background: '#f5f5f5',
-                },
-              }}
+              sx={{ ...buttonStyles, right: 128, }}
             />
             <Box sx={{ display: 'flex', gap: `${GAP}px`, width: "100%", margin: 'auto 40px' }}>
-              <Paper
-                sx={{
-                  width: "100%",
-                  height: INNER_HEIGHT,
-                  background: 'black',
-                  padding: '20px',
-                  borderRadius: '8px',
-                  overflowY: 'auto',
+              <TextField
+                multiline
+                value={jobPosting}
+                disabled={true}
+                variant="outlined"
+                sx={textAreaStyles}
+                slotProps={{
+                  input: {
+                    sx: {
+                      backgroundColor: '#d3d3d3',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      '& .MuiInputBase-input.Mui-disabled': {
+                        color: 'black !important',
+                        '-webkit-text-fill-color': 'black !important',
+                      }
+                    }
+                  }
                 }}
-              >
-                <Typography variant="body1" sx={{whiteSpace: "pre-line", color: 'white'}}>{jobPosting}</Typography>
-              </Paper>  
+              />
               <TextField
                 multiline
                 value={generatedDocument}
                 disabled={isDocumentLoading}
                 variant="outlined"
                 onChange={(e) => setGeneratedDocument(e.target.value)}
+                sx={textAreaStyles}
                 slotProps={{
                   input: {
                     sx: {
-                      color: 'white',
-                      backgroundColor: 'black',
+                      backgroundColor: '#d3d3d3',
                       '& .MuiOutlinedInput-notchedOutline': {
                         border: 'none',
                       },
@@ -280,24 +288,6 @@ const GenerationContainer: React.FC = () => {
                       },
                     }
                   }
-                }}
-                sx={{
-                  width: "100%",
-                  // height: INNER_HEIGHT,
-                  '& .MuiInputBase-root': {
-                    height: '100%',
-                    alignItems: 'flex-start',
-                    padding: '20px 0px 20px 20px',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    lineHeight: '1.5',
-                    fontFamily: 'inherit',
-                  },
-                  '& .MuiInputBase-input': {
-                    height: '100% !important',
-                    overflow: 'auto !important',
-                    whiteSpace: 'pre-line',
-                  },
                 }}
               />
             </Box>

@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "generate-resume",
     title: "Generate Resume",
-    contexts: ["selection"]
+    contexts: ["selection"],
   });
 });
 
@@ -43,7 +43,7 @@ const sendMessages = async (
       chrome.storage.local.set({ token: res.headers.get("Authorization") });
       chrome.tabs.sendMessage(tabId, {
         action: "show-generation-container",
-        jobPosting: info.selectionText,
+        // jobPosting: info.selectionText,
         documentType: documentType,
       });
     }

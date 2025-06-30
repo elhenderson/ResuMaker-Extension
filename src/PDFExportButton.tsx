@@ -1,8 +1,51 @@
-import React from 'react';
-import { IconButton } from '@mui/material';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import React, { useState } from 'react';
+import { IconButton, Box, keyframes } from '@mui/material';
+import { PictureAsPdf } from '@mui/icons-material';
 import { Document, Page, Text, StyleSheet, pdf, View } from '@react-pdf/renderer';
 import { customFetch } from './customFetch';
+
+// Soothing bubbles animation
+const bubbleAnimation = keyframes`
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+`;
+
+const SoothingBubbles: React.FC = () => (
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '4px',
+      width: '40px',
+      height: '40px',
+    }}
+  >
+    {[...Array(3)].map((_, index) => (
+      <Box
+        key={index}
+        sx={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: 'gray',
+          animation: `${bubbleAnimation} .5s ease-in-out infinite`,
+          animationDelay: `${index * 0.1}s`,
+        }}
+      />
+    ))}
+  </Box>
+);
 
 interface TextItem {
   content: string;
@@ -34,8 +77,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 15,
-    marginBottom: 5,
     textAlign: 'left',
   },
   section: {
@@ -51,7 +92,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#999',
-    marginVertical: 10,
+    marginVertical: 4,
   },
 });
 
@@ -150,8 +191,14 @@ interface PDFExportButtonProps {
 }
 
 const PDFExportButton: React.FC<PDFExportButtonProps> = ({ documentType, jobPosting, content, disabled = false, sx }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  
   const handleExportPDF = async () => {
+    if (isLoading) return;
+    
     try {
+      setIsLoading(true);
+      
       // @ts-ignore
       const storage = await chrome.storage.local.get(["token"]);
 
@@ -198,8 +245,27 @@ const PDFExportButton: React.FC<PDFExportButtonProps> = ({ documentType, jobPost
       }, 1000);
     } catch (error) {
       console.error('Failed to export PDF:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '48px',
+          height: '48px',
+          ...sx,
+        }}
+      >
+        <SoothingBubbles />
+      </Box>
+    );
+  }
 
   return (
     <IconButton
@@ -207,7 +273,7 @@ const PDFExportButton: React.FC<PDFExportButtonProps> = ({ documentType, jobPost
       disabled={disabled}
       sx={sx}
     >
-      <PictureAsPdfIcon />
+      <PictureAsPdf />
     </IconButton>
   );
 };
