@@ -1,24 +1,6 @@
 import './App.css'
-import { Box, ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    background: {
-      default: '#181a20',
-      paper: '#23272f',
-    },
-    primary: {
-      main: '#90caf9',
-    },
-    error: {
-      main: '#f44336',
-    },
-  },
-  shape: {
-    borderRadius: 12,
-  },
-});
+import { Box, ThemeProvider, CssBaseline } from '@mui/material';
+import { darkTheme } from "@elhenderson/resumaker-common";
 
 export default function App({ children }: { children: React.ReactNode }) {
 
@@ -29,7 +11,9 @@ export default function App({ children }: { children: React.ReactNode }) {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        minHeight="100vh"
+        height="100%"
+        minWidth={500}
+        // minHeight="100vh"
         bgcolor="background.default"
       >
         {children}

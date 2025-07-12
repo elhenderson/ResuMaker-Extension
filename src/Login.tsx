@@ -12,7 +12,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { setToken, token } = useAuth();
+  const { setToken } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,9 +68,6 @@ export default function Login() {
       >
         ResuMaker
       </Typography>
-      <Typography variant="h6" component="h2" gutterBottom align="center" sx={{ mb: 2, fontWeight: 400, fontSize: '1.1rem' }}>
-        Login
-      </Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <TextField
           label="Email"
@@ -115,7 +112,23 @@ export default function Login() {
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </Box>
-        {token}
+
+        <Box mt={3} display="flex" justifyContent="center">
+          <Typography variant="body2" color="text.secondary">
+            Don't have an account?{' '}
+            Register{' '}
+            <a 
+              // href="https://resumaker.link" 
+              href="http://localhost:3000/"
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#1976d2', textDecoration: 'none' }}
+            >
+              here!
+            </a>
+          </Typography>
+        </Box>
+        
       </Box>
     </Paper>
   )
