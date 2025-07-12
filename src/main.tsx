@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import routes from "./routes";
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './auth/AuthProvider.tsx';
+import { AuthProvider } from '@elhenderson/resumaker-common';
 
 const router = createBrowserRouter(routes());
 

@@ -1,0 +1,40 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- This SVG is designed to be transparent, so it adopts the background. For preview, a background is added. -->
+  <!-- <rect width="128" height="128" rx="28" fill="#2d3748"/> -->
+
+  <!-- OSRS Rune Stone Base (Centered) -->
+  <g transform="translate(-60, -25) scale(1.5)">
+    <path d="M96.7,24.3C87.3,20,76.7,20.3,67.1,24.9C57.5,29.5,50.1,38,46.7,48.2C43.3,58.4,44.1,69.7,49.1,79.1C54.1,88.5,62.9,94.9,73.3,97.3C83.7,99.7,94.6,97.9,103.3,92.5C112,87.1,117.7,78.5,119.3,68.6C120.9,58.7,118.3,48.1,112.3,39.6C106.3,31.1,96.7,24.3,96.7,24.3Z" fill="#B8B8B8"/>
+    <path d="M97.1,24.4C97.1,24.4,106.7,31.2,112.7,39.7C118.7,48.2,121.3,58.8,119.7,68.7C118.1,78.6,112.4,87.2,103.7,92.6C95,98,84.1,99.8,73.7,97.4C63.3,95,54.5,88.6,49.5,79.2C44.5,69.8,43.7,58.5,47.1,48.3C50.5,38.1,57.9,29.6,67.5,25C77.1,20.4,87.7,20.1,97.1,24.4Z" stroke="#4A4A4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Paper / Scroll (Centered) -->
+  <!-- <g transform="translate(40, 44) scale(0.4)"> -->
+  <!-- <g transform="translate(-60, -25) scale(1.5)"> -->
+  <g transform="translate(22, 30) scale(0.7)">
+    <path d="M20,0 C40,-5, 80,-5, 100,0 L120,20 V80 L100,100 C80,105, 40,105, 20,100 L0,80 L0,20 L20,0 Z" fill="#D9D0B6" />
+    <path d="M20,0 L0,20 V80 L20,100" fill="#EFE8D9" />
+    <path d="M20,0 C40,-5, 80,-5, 100,0 L120,20 V80 L100,100 C80,105, 40,105, 20,100 L0,80 V20 L20,0 Z" stroke="#5A5245" stroke-width="4" />
+  </g>
+
+  <!-- Mind Rune on Paper (Centered) -->
+  <g transform="translate(26, 38) scale(0.4)">
+    <!-- <path d="M64,56C69.5228,56,74,51.5228,74,46C74,40.4772,69.5228,36,64,36C58.4772,36,54,40.4772,54,46C54,51.5228,58.4772,56,64,56Z" fill="#4A4A4A"/>
+    <path d="M64,56V84" stroke="#4A4A4A" stroke-width="8" stroke-linecap="round"/>
+    <path d="M52,70H76" stroke="#4A4A4A" stroke-width="8" stroke-linecap="round"/> -->
+
+    <!-- Squiggly Line 1 -->
+    <path d="M 10 25 q 15 -20 30 0 t 30 0 t 30 0 30 0 t 30 0 t 30 0" stroke="black" stroke-width="2.5" fill="none"/>
+    
+    <!-- Squiggly Line 2 (shifted down by 20px) -->
+    <path d="M 10 45 q 15 -20 30 0 t 30 0 t 30 0 30 0 t 30 0 t 30 0" stroke="black" stroke-width="2.5" fill="none"/>
+    
+    <!-- Squiggly Line 3 (shifted down by another 20px) -->
+    <path d="M 10 65 q 15 -20 30 0 t 30 0 t 30 0 30 0 t 30 0 t 30 0" stroke="black" stroke-width="2.5" fill="none"/>
+
+    <path d="M 10 85 q 15 -20 30 0 t 30 0 t 30 0 30 0 t 30 0 t 30 0" stroke="black" stroke-width="2.5" fill="none"/>
+
+    <path d="M 10 105 q 15 -20 30 0 t 30 0 t 30 0 30 0 t 30 0 t 30 0" stroke="black" stroke-width="2.5" fill="none"/>
+  </g>
+
+</svg>

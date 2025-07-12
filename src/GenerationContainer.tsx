@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { customFetch } from './customFetch';
+import { customFetch } from "@elhenderson/resumaker-common";
 import { 
   Box, 
   Typography, 
@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Close, ContentCopy, Check, Refresh } from "@mui/icons-material"
 import PDFExportButton from './PDFExportButton';
+import { gradientAnimation, gradient } from '@elhenderson/resumaker-common';
 
 const GENERATION_WIDTH = 1500;
 const GENERATION_HEIGHT = 1123;
@@ -24,7 +25,7 @@ const GenerationContainer: React.FC = () => {
   const [isDocumentLoading, setIsDocumentLoading] = useState<boolean>(false);
   const [loginRequired, setLoginRequired] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
-  const [documentType, setDocumentType] = useState<string>("");
+  const [documentType, setDocumentType] = useState<"resume" | "coverLetter">("resume");
 
   useEffect(() => {
     window.addEventListener("show-generation-container", (event: any) => {
@@ -69,7 +70,6 @@ const GenerationContainer: React.FC = () => {
     }
 
     try {
-      // @ts-ignore
       const storage = await chrome.storage.local.get(["token"]);
 
       const body = {
@@ -199,12 +199,50 @@ const GenerationContainer: React.FC = () => {
         </IconButton>
         {loginRequired ? 
           <Box sx={{ display: 'flex', flexDirection: "column", gap: `${GAP}px`, width: "100%", margin: 'auto 40px' }}>
-            <Typography variant="h5" component="h3" sx={{marginTop: "-72px"}} >ResuMaker</Typography>
-            <Typography variant="body1" sx={{ fontSize: "16px" }}>
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              sx={{
+                marginTop: "-50px",
+                background: gradient,
+                backgroundSize: '200% 200%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginBottom: '20px',
+                ...gradientAnimation,
+              }}
+            >
+              ResuMaker
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "16px", color: "#d3d3d3" }}>
               <strong>Please login via the extension popup to generate documents.</strong>
             </Typography>
           </Box> :
           <>
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              sx={{
+                position: 'absolute',
+                top: 16,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: gradient,
+                backgroundSize: '200% 200%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontWeight: 'bold',
+                zIndex: 10001,
+                margin: 0,
+                ...gradientAnimation,
+              }}
+            >
+              ResuMaker
+            </Typography>
             <IconButton
               onClick={handleRefresh}
               disabled={!jobPosting || !documentType || isDocumentLoading}
@@ -223,6 +261,28 @@ const GenerationContainer: React.FC = () => {
                   },
                 }}
               />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (!isDocumentLoading && jobPosting) {
+                  const newDocumentType = documentType === "resume" ? "coverLetter" : "resume";
+                  setDocumentType(newDocumentType);
+                  getDocument(jobPosting, newDocumentType);
+                }
+              }}
+              disabled={!jobPosting || isDocumentLoading}
+              sx={{
+                ...buttonStyles,
+                width: 100,
+                right: 240,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '12px',
+                fontWeight: 'bold',
+              }}
+            >
+              {documentType === "resume" ? "Cover Letter" : "Resume"}
             </IconButton>
             <IconButton
               onClick={handleCopyToClipboard}

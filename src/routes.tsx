@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import ProtectedRoute  from './auth/ProtectedRoute';
+import { ProtectedRoute }  from '@elhenderson/resumaker-common';
 import LoggedIn from './LoggedIn';
 import Login from "./Login";
 

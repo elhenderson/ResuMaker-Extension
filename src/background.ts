@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { customFetch } from "./customFetch";
+import { customFetch } from "@elhenderson/resumaker-common";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({

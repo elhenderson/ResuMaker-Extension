@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "@elhenderson/resumaker-common";
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
 // import "./Loading.scss";
@@ -12,8 +12,12 @@ export default function ProtectedRoute() {
 
   useEffect(() => {
     const getAuthToken = async () => {
-      //@ts-ignore
-      const authTokenResponse = await chrome.storage.local.get(["token"]);
+      // Check if running in Chrome extension environment and get token
+      const authTokenResponse = typeof chrome !== 'undefined' && 
+        chrome.storage && 
+        chrome.storage.local
+        ? await chrome.storage.local.get(["token"])
+        : { token: null };
 
       const res = !authTokenResponse.token ?
         await customFetch('/authenticate', {
@@ -30,8 +34,12 @@ export default function ProtectedRoute() {
       }
       if (res.status === 200) {
         setToken(res.headers.get("Authorization"));
-        //@ts-ignore
-        chrome.storage.local.set({ token: res.headers.get("Authorization") });
+        // Check if running in Chrome extension environment
+        if (typeof chrome !== 'undefined' && 
+            chrome.storage && 
+            chrome.storage.local) {
+          chrome.storage.local.set({ token: res.headers.get("Authorization") });
+        }
         setIsAuthenticated(true);
       }
     } 

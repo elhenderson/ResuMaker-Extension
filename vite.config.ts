@@ -1,18 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   plugins: [
     react(),
-    // viteStaticCopy({
-    //   targets: [
-    //     {
-    //       src: 'manifest.json',
-    //       dest: '' // copies to dist root
-    //     }
-    //   ]
-    // })
   ],
   build: {
     rollupOptions: {
@@ -20,11 +11,13 @@ export default defineConfig({
         main: 'index.html',
         background: 'src/background.ts',
         injectGenerationContainer: 'src/injectGenerationContainer.tsx',
+        utils: 'src/utils.ts',
       },
       output: {
         entryFileNames: chunk => {
           if (chunk.name === 'background') return 'background.js';
           if (chunk.name === 'injectGenerationContainer') return 'injectGenerationContainer.js';
+          if (chunk.name === 'utils') return 'utils.js';
           return 'assets/[name]-[hash].js';
         },
       },

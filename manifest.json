@@ -5,7 +5,12 @@
   "description": "A browser extension with a React popup login form and a context menu item.",
   "action": {
     "default_popup": "index.html",
-    "default_icon": "resuMaker.png"
+    "default_icon": {
+      "16": "icons/resuMaker16.png",
+      "32": "icons/resuMaker32.png",
+      "48": "icons/resuMaker48.png",
+      "128": "icons/resuMaker128.png"
+    }
   },
   "background": {
     "service_worker": "background.js",
@@ -14,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["injectGenerationContainer.js"],
+      "js": ["injectGenerationContainer.js", "utils.js"],
       "run_at": "document_idle"
     }
   ],
@@ -27,8 +32,9 @@
     "<all_urls>"
   ],
   "icons": {
-    "16": "resuMaker.png",
-    "48": "resuMaker.png",
-    "128": "resuMaker.png"
+    "16": "icons/resuMaker16.png",
+    "32": "icons/resuMaker32.png",
+    "48": "icons/resuMaker48.png",
+    "128": "icons/resuMaker128.png"
   }
 }

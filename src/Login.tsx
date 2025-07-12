@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Box, Button, CircularProgress, TextField, Typography, Alert, Paper } from '@mui/material';
-import { useAuth } from './auth/AuthProvider';
+import { useAuth } from '@elhenderson/resumaker-common';
 import { useNavigate } from 'react-router-dom';
-import { customFetch } from './customFetch';
+import { customFetch } from '@elhenderson/resumaker-common';
+import { gradientAnimation, gradientHoverAnimation, gradient } from '@elhenderson/resumaker-common';
 
 export default function Login() {
 
@@ -13,29 +14,6 @@ export default function Login() {
 
   const { setToken, token } = useAuth();
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const getAuthToken = async () => {
-  //     //@ts-ignore
-  //     const authTokenResponse = await chrome.storage.local.get(["token"]);
-
-  //     if (!authTokenResponse.token) { 
-  //       const res = await customFetch('/authenticate', {
-  //         method: 'GET',
-  //       });
-  //       if (res.status === 401) {
-  //         navigate("/")
-  //       }
-  //       if (res.status === 200) {
-  //         setToken(res.headers.get("Authorization"));
-  //         //@ts-ignore
-  //         chrome.storage.local.set({ token: res.headers.get("Authorization") });
-  //         navigate("/app/logged-in");
-  //       }
-  //     }
-  //   } 
-  //   getAuthToken();
-  // }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +39,7 @@ export default function Login() {
         // }
 
         if (response.status === 200) {
+          // @ts-ignore
           setToken(response.headers.get("Authorization"));
           //@ts-ignore
           chrome.storage.local.set({ token: response.headers.get("Authorization") });
@@ -71,7 +50,22 @@ export default function Login() {
 
   return (
     <Paper elevation={3} sx={{ p: 4, minWidth: 320, maxWidth: 400, bgcolor: 'background.paper', minHeight: 0 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ fontWeight: 700, mb: 1, background: 'linear-gradient(90deg, #90caf9 0%, #42a5f5 50%, #7e57c2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', textFillColor: 'transparent' }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{
+          fontWeight: 700,
+          mb: 1,
+          background: gradient,
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          backgroundSize: '200% 200%',
+          WebkitTextFillColor: 'transparent',
+          ...gradientAnimation,
+        }}
+      >
         ResuMaker
       </Typography>
       <Typography variant="h6" component="h2" gutterBottom align="center" sx={{ mb: 2, fontWeight: 400, fontSize: '1.1rem' }}>
@@ -108,14 +102,14 @@ export default function Login() {
             size="large"
             startIcon={loading ? <CircularProgress size={20} /> : null}
             sx={{
-              background: 'linear-gradient(90deg, #90caf9 0%, #42a5f5 50%, #7e57c2 100%)',
               color: '#fff',
               fontWeight: 700,
               boxShadow: 'none',
               '&:hover': {
-                background: 'linear-gradient(90deg, #7e57c2 0%, #42a5f5 50%, #90caf9 100%)',
-                boxShadow: 'none',
+                ...gradientHoverAnimation
               },
+              background: gradient,
+              ...gradientAnimation
             }}
           >
             {loading ? 'Logging in...' : 'Login'}
