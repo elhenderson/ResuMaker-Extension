@@ -2,7 +2,7 @@ import { gradient, gradientAnimation, gradientHoverAnimation } from '@elhenderso
 import { Typography, Box, Link, Button } from '@mui/material';
 import { useAuth } from '@elhenderson/resumaker-common';
 import { useNavigate } from 'react-router-dom';
-import { customFetch } from '@elhenderson/resumaker-common';
+import { customFetch, Logo } from '@elhenderson/resumaker-common';
 
 export default function LoggedIn() {
   const { setToken, token } = useAuth();
@@ -21,33 +21,15 @@ export default function LoggedIn() {
     } catch (error) {
       console.error("Logout error:", error);
     }
-    // Navigate to login page after logout attempt
+
     setToken(null);
-    //@ts-ignore
     chrome.storage.local.set({ token: null });
     navigate("/");
   };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{
-          fontWeight: 700,
-          mb: 1,
-          background: gradient,
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
-          backgroundSize: '200% 200%',
-          WebkitTextFillColor: 'transparent',
-          ...gradientAnimation,
-        }}
-      >
-        ResuMaker
-      </Typography>
+      <Logo />
       <Typography variant="h4" color="primary" gutterBottom>
         You're logged in!
       </Typography>
@@ -88,9 +70,9 @@ export default function LoggedIn() {
 
       <Box sx={{ mt: 4 }}>
         <Button
-          onClick={handleLogout}
+          onClick={() => handleLogout()}
           variant="outlined"
-          color="secondary"
+          color="error"
           sx={{
             borderRadius: 2,
             px: 4,

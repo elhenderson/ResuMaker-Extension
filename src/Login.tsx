@@ -3,7 +3,7 @@ import { Box, Button, CircularProgress, TextField, Typography, Alert, Paper } fr
 import { useAuth } from '@elhenderson/resumaker-common';
 import { useNavigate } from 'react-router-dom';
 import { customFetch } from '@elhenderson/resumaker-common';
-import { gradientAnimation, gradientHoverAnimation, gradient } from '@elhenderson/resumaker-common';
+import { gradientAnimation, gradientHoverAnimation, gradient, Logo } from '@elhenderson/resumaker-common';
 
 export default function Login() {
 
@@ -15,59 +15,40 @@ export default function Login() {
   const { setToken } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    // Simulate login
-    return customFetch('/signin', {
-        method: 'POST', 
-        body: JSON.stringify({
-          "email": email.toString().toLowerCase(),
-          "password": password,
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(async response => {
 
-        // if (response.status === 401) {
-        //   setSigninEmailPassError(true)
-        //   setSigninEmailPassErrorMessage(await response.text());
-        //   setIsLoading(false)
-        // }
-
-        if (response.status === 200) {
-          // @ts-ignore
-          setToken(response.headers.get("Authorization"));
-          //@ts-ignore
-          chrome.storage.local.set({ token: response.headers.get("Authorization") });
-          navigate("/app/logged-in");
-        }
-      })
+    const response = await customFetch('/signin', {
+      method: 'POST',
+      body: JSON.stringify({
+        "email": email.toString().toLowerCase(),
+        "password": password,
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    if (response.status === 200) {
+      console.log("Auth token received:", response.headers.get("Authorization"));
+      setToken(response.headers.get("Authorization"));
+      chrome.storage.local.set({ token: response.headers.get("Authorization") });
+      navigate("/app/logged-in");
+    }
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, minWidth: 320, maxWidth: 400, bgcolor: 'background.paper', minHeight: 0 }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{
-          fontWeight: 700,
-          mb: 1,
-          background: gradient,
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
-          backgroundSize: '200% 200%',
-          WebkitTextFillColor: 'transparent',
-          ...gradientAnimation,
-        }}
-      >
-        ResuMaker
-      </Typography>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 4,
+        minWidth: 320,
+        maxWidth: 400,
+        bgcolor: 'background.paper',
+        minHeight: 0
+      }}>
+      <Logo />
       <Box component="form" onSubmit={handleSubmit}>
         <TextField
           label="Email"
@@ -128,7 +109,6 @@ export default function Login() {
             </a>
           </Typography>
         </Box>
-        
       </Box>
     </Paper>
   )

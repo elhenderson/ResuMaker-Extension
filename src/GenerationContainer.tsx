@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { customFetch } from "@elhenderson/resumaker-common";
+import { customFetch, Logo } from "@elhenderson/resumaker-common";
 import { 
   Box, 
   Typography, 
@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import { Close, ContentCopy, Check, Refresh } from "@mui/icons-material"
 import PDFExportButton from './PDFExportButton';
-import { gradientAnimation, gradient } from '@elhenderson/resumaker-common';
 
 const GENERATION_WIDTH = 1500;
 const GENERATION_HEIGHT = 1123;
@@ -28,23 +27,35 @@ const GenerationContainer: React.FC = () => {
   const [documentType, setDocumentType] = useState<"resume" | "coverLetter">("resume");
 
   useEffect(() => {
-    window.addEventListener("show-generation-container", (event: any) => {
-      setVisible(true);
-      setLoginRequired(false);
-      // setJobPosting(event.detail.jobPosting);
-      setDocumentType(event.detail.documentType);
-      getDocument(event.detail.jobPosting, event.detail.documentType);
-    });
+    window.addEventListener("show-generation-container", async (event: any) => {
+      const authToken = await chrome.storage.local.get(["token"]);
+      console.log("Auth Token:", authToken);
 
-    window.addEventListener("login-required", () => {
-      setLoginRequired(true);
-      setVisible(true);
-    })
-
-    window.addEventListener("auth-updated", (event: any) => {
-      if (event.detail.authenticated) {
-        setLoginRequired(false);
+      const res = !authToken.token ?
+        await customFetch('/authenticate', {
+          method: 'GET',
+        }) :
+        await customFetch('/authenticate', {
+          method: 'GET',
+          headers: {
+            'Authorization': authToken.token
+          }
+        })
+      if (res.status === 401) {
+        setLoginRequired(true);
         setVisible(true);
+      }
+
+      if (res.status === 200) {
+        const authToken = res.headers.get("Authorization");
+        if (authToken) {
+          await chrome.storage.local.set({ token: authToken });
+        }
+        
+        setVisible(true);
+        setLoginRequired(false);
+        setJobPosting(event.detail.jobPosting);
+        setDocumentType(event.detail.documentType);
       }
     });
 
@@ -53,15 +64,16 @@ const GenerationContainer: React.FC = () => {
         setLoginRequired(false);
         setVisible(true);
       });
-
-      window.removeEventListener("login-required", () => {
-        setLoginRequired(true);
-        setVisible(true);
-      });
     };
   }, []);
 
-  const getDocument = async (jobPosting: string, documentType: string) => {
+  useEffect(() => {
+    if (jobPosting && documentType && visible) {
+      getDocument();
+    }
+  }, [jobPosting, documentType, visible]);
+
+  const getDocument = async () => {
     setGeneratedDocument("");
     setIsDocumentLoading(true);
 
@@ -132,7 +144,7 @@ const GenerationContainer: React.FC = () => {
   const handleRefresh = () => {
     if (jobPosting && documentType) {
       setGeneratedDocument("");
-      getDocument(jobPosting, documentType);
+      getDocument();
     }
   };
 
@@ -199,50 +211,22 @@ const GenerationContainer: React.FC = () => {
         </IconButton>
         {loginRequired ? 
           <Box sx={{ display: 'flex', flexDirection: "column", gap: `${GAP}px`, width: "100%", margin: 'auto 40px' }}>
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{
-                marginTop: "-50px",
-                background: gradient,
-                backgroundSize: '200% 200%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                marginBottom: '20px',
-                ...gradientAnimation,
-              }}
-            >
-              ResuMaker
-            </Typography>
+            <div style={{marginTop: '-60px'}}>
+              <Logo />
+            </div>
             <Typography variant="body1" sx={{ fontSize: "16px", color: "#d3d3d3" }}>
               <strong>Please login via the extension popup to generate documents.</strong>
             </Typography>
           </Box> :
           <>
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{
-                position: 'absolute',
-                top: 16,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: gradient,
-                backgroundSize: '200% 200%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                fontWeight: 'bold',
-                zIndex: 10001,
-                margin: 0,
-                ...gradientAnimation,
-              }}
-            >
-              ResuMaker
-            </Typography>
+            <div style={{
+              position: 'absolute',
+              top: 16,
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}>
+              <Logo />
+            </div>
             <IconButton
               onClick={handleRefresh}
               disabled={!jobPosting || !documentType || isDocumentLoading}
@@ -267,7 +251,6 @@ const GenerationContainer: React.FC = () => {
                 if (!isDocumentLoading && jobPosting) {
                   const newDocumentType = documentType === "resume" ? "coverLetter" : "resume";
                   setDocumentType(newDocumentType);
-                  getDocument(jobPosting, newDocumentType);
                 }
               }}
               disabled={!jobPosting || isDocumentLoading}
