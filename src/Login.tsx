@@ -31,7 +31,6 @@ export default function Login() {
       }
     });
     if (response.status === 200) {
-      console.log("Auth token received:", response.headers.get("Authorization"));
       setToken(response.headers.get("Authorization"));
       chrome.storage.local.set({ token: response.headers.get("Authorization") });
       navigate("/app/logged-in");

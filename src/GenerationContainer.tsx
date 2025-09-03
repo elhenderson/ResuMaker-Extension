@@ -29,7 +29,6 @@ const GenerationContainer: React.FC = () => {
   useEffect(() => {
     window.addEventListener("show-generation-container", async (event: any) => {
       const authToken = await chrome.storage.local.get(["token"]);
-      console.log("Auth Token:", authToken);
 
       const res = !authToken.token ?
         await customFetch('/authenticate', {
